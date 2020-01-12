@@ -47,15 +47,15 @@ void saturatePict(cv::Mat &im)
 		{
             if (im.at<char>(y,x) > saturation)
             {
-                newImage.at<char>(y,x) = saturation;
+                im.at<char>(y,x) = saturation;
             }  
             else
 			{
-				newImage.at<char>(y,x) = im.at<char>(y,x);
+				im.at<char>(y,x) = im.at<char>(y,x);
 			}
         }
     }	
-]
+}
 
 
 int main() {
@@ -95,7 +95,6 @@ int main() {
     cv::imwrite("bw_image.png", dst);
     
     cv::Mat ManuallyUpdated =  cv::imread("new.png", 1); 
-        cv::imshow("new.png", newImage);
     if(!ManuallyUpdated.data) 
 	{
         std::cout << "Can't open file " << "new.png" << '\n';
