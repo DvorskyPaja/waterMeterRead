@@ -8,13 +8,19 @@
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 
-void recognizeDigits(cv::Mat im)
+float convertToFLoat (std::string word)
+{
+    word.erase(remove(word.begin(), word.end(), ' '), word.end());
+    float water = stof(word)/1000;
+    return water;
+}
+
+float recognizeDigits(cv::Mat im)
 {
     using namespace std;
    std::string outText;
     // Create Tesseract object
     tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
-    //ocr->SetVariable("classify_bln_numeric_mode", "1");
     ocr->SetVariable("tessedit_char_blacklist", "!%");
      
     // Initialize tesseract to use English (eng) and the LSTM OCR engine. 
@@ -25,29 +31,23 @@ void recognizeDigits(cv::Mat im)
  
     //            image    columns  rows     bytes per pixel,    
     ocr->SetImage(im.data, im.cols, im.rows, 3, im.step);
- 
-    // Run Tesseract OCR on image
+     // Run Tesseract OCR on image
     outText = string(ocr->GetUTF8Text());
-    
-    cout << "recognized text: "<< outText << endl; // Destroy used object and release memory ocr->End();
-    int water = stoi(outText);
-    //for ()
-    cout<< outText[5]<< endl;
-    cout << "actual consumption: "<< water<< endl;
     ocr->End();
+    //cout << "recognized text: "<< outText << endl; // Destroy used object and release memory ocr->End();
+    return convertToFLoat(outText);
 }
-// Get rid of 
-void saturatePict(cv::Mat &im)
+// Get rid of too white places
+void saturatePict(cv::Mat &im, unsigned int satlimit)
 {
-	const unsigned char saturation = 130;  
     //cv::Mat newImage = cropped;
     for( int y = 0; y < im.rows; y++ ) 
 	{
         for( int x = 0; x < im.cols; x++ ) 
 		{
-            if (im.at<char>(y,x) > saturation)
+            if (im.at<char>(y,x) > satlimit)
             {
-                im.at<char>(y,x) = saturation;
+                im.at<char>(y,x) = satlimit;
             }  
             else
 			{
@@ -74,14 +74,13 @@ int main() {
     cvtColor(input, output, cv::COLOR_BGR2GRAY);
 
     cv::imwrite("GrayImage.jpg", output);
-    std::cout <<"rows:"<<output.rows << "columns" << output.cols << '\n';
     // crop image 
                                     // x    y    width    height       
     cv::Mat cropped (output, cv::Rect(555, 110, 1670-555, 290-100) ); // using a rectangle
     //
     cv::imshow("cropped", cropped);   //       alfa, beta
 
-    saturatePict (cropped);
+    saturatePict (cropped, 130);
     
     medianBlur ( cropped, cropped, 5 );
     cv::imshow("median blur", cropped);
@@ -93,6 +92,7 @@ int main() {
     
     cv::imshow("bw_image.png", dst);
     cv::imwrite("bw_image.png", dst);
+    // whitening of borders
     
     cv::Mat ManuallyUpdated =  cv::imread("new.png", 1); 
     if(!ManuallyUpdated.data) 
@@ -101,7 +101,7 @@ int main() {
         return -1;
     }
       
-    recognizeDigits (ManuallyUpdated);
+    cout << "Actual state: " << recognizeDigits (ManuallyUpdated) <<endl;
 
     // Wait until the presses any key
     cv::waitKey(0);
