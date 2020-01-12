@@ -49,10 +49,6 @@ void saturatePict(cv::Mat &im, unsigned int satlimit)
             {
                 im.at<char>(y,x) = satlimit;
             }  
-            else
-			{
-				im.at<char>(y,x) = im.at<char>(y,x);
-			}
         }
     }	
 }
@@ -93,7 +89,24 @@ int main() {
     cv::imshow("bw_image.png", dst);
     cv::imwrite("bw_image.png", dst);
     // whitening of borders
+	cout << "rows" << dst.rows << "columns" << dst.columns << endl;
+	const int ranges[] [] = {{0,20}, {94,158}, {241,307}, {385, 455}, {530,597}, {679,742}, {822,866}, {966,1041}, {1105, 1115}}
     
+    for( int y = 0; y < dst.rows; y++ ) 
+	{
+        for( int x = 0; x < dst.cols; x++ ) 
+		{
+			for ( int i = 0; i < sizeof(ranges)/2; i = i +2)
+			{
+			    if ((x > ranges[i]) && (x < ranges[i+1]))
+                {
+                    dst.at<char>(y,x) = 255;
+                }
+			}
+		}
+	}
+	cv::imshow("after whitening", dst);
+	
     cv::Mat ManuallyUpdated =  cv::imread("new.png", 1); 
     if(!ManuallyUpdated.data) 
 	{
