@@ -137,7 +137,7 @@ std::string convertToString(char* a)
 
 int main(int argc, char *argv[]) {
     using namespace std;    
-    std::string img_file{"../Desktop/"};
+    std::string img_file{"/home/pi/Desktop/"};
     cout <<"argv[1]"<< argv[1] <<endl;
     cout <<"argc"<< argc <<endl;
     int size = 18; 
@@ -145,8 +145,8 @@ int main(int argc, char *argv[]) {
     
     string fileName = convertToString(argv[1]);
     cout << "filename: " << fileName<< endl; 
-    img_file = img_file + fileName;
-    cout << "connected" << img_file<< endl;
+    //img_file = img_file + fileName;
+    //cout << "connected" << img_file<< endl;
     
     
     //std::string s = convertToString(argv[0], argc);
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
     cv::Mat output;
     cvtColor(input, output, cv::COLOR_BGR2GRAY);
     printPictInfo(output);
-    cv::imwrite("GrayImage.jpg", output);
+    //cv::imwrite("GrayImage.jpg", output);
     // crop image 
                                     // x    y    width    height       
     cv::Mat cropped (output, cv::Rect(555, 110, 1670-555, 290-100) ); // using a rectangle
@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
     cv::adaptiveThreshold(cropped,dst, maxValue,cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 101, 7.0);
     
     //cv::imshow("bw_image.png", dst);
-    cv::imwrite("bw_image.png", dst);
+    //cv::imwrite("bw_image.png", dst);
     // whitening of borders
 	cout << "rows" << dst.rows << "columns" << dst.cols << endl;
     // const int ranges [9] [2] = {{0,20}, {91,158}, {241,307}, {385, 455}, {530,597}, {679,742}, {822,866}, {966,1041}, {1105, 1115}};  
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
     
-	cv::imshow("after whitening", dst);
+	//cv::imshow("after whitening", dst);
 	
     //cv::Mat ManuallyUpdated =  cv::imread("new.png", 1); 
     //if(!ManuallyUpdated.data) 
@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
     //    return -1;
     //}
     //removeAlphaChannel(dst);
-    cv::imwrite("recognize.png", dst);
+    cv::imwrite("/home/pi/Scripts/recognize.png", dst);
     //float water = recognizeDigits (dst);
     //cout << "Actual state: " << water <<endl;
     //cv::imshow("ManuallyUpdated",dst);
