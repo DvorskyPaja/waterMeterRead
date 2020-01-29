@@ -1,1 +1,2 @@
-curl -T /home/pi/Pictures/water.jpg --netrc-file /home/pi/.netrc ftp://pajak.wz.cz
+curl -T /home/pi/Scripts/web/text.txt --netrc-file /home/pi/.netrc ftp://vodnik.wz.cz
+curl -T /home/pi/Scripts/recognize.png --netrc-file /home/pi/.netrc ftp://vodnik.wz.cz

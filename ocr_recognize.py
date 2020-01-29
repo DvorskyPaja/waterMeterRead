@@ -34,14 +34,26 @@ fullDateTime = str(result.group(1))
 fullDateTime = re.split('_', fullDateTime)
 
 
+date = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
+time = str(fullDateTime[3] + ':' + fullDateTime[4])
+
 # Write actual consumtion
-ws[('C' + str(row_count+1))] =  str(actualConsumption)
-ws[('A' + str(row_count+1))] =  str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
-ws[('B' + str(row_count+1))] =  str(fullDateTime[3] + ':' + fullDateTime[4])
+ws[('C' + str(row_count+1))] = str(actualConsumption)
+ws[('A' + str(row_count+1))] = date
+ws[('B' + str(row_count+1))] = time
 
 
 text = ws['A1'].value
 print (text)
 wb.save('/home/pi/Desktop/technicka.xlsx')
+
+file = open('/home/pi/Scripts/web/text.txt', 'a')  
+
+
+file.write('\n'+ date +"\t" + time + "\t" + str(actualConsumption))
+
+file.close()
+
+
 
 
