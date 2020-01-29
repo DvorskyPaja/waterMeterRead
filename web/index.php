@@ -29,6 +29,7 @@
 	    	// echo"</tr>";
 	    	fclose($soubor);
 	    ?>	
-	</table>    
+	</table> 
+    <img src="recognize.png" alt="Latest" align="right">	
     </head>
 </html>

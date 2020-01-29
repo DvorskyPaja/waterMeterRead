@@ -21,38 +21,6 @@ void printPictInfo(cv::Mat image)
     std::cout<<"number of channels"<<image.channels() <<std::endl;    
 }
 
-
-void removeAlphaChannel(cv::Mat image)
-{
-
-// Split channels of the png files
-std::vector<cv::Mat> pngChannels(4);
-cv::split(image, pngChannels);
-/*
-cv::imshow("Input image", image);
-cv::imshow("Input image R", pngChannels[0]);
-cv::imshow("Input image G", pngChannels[1]);
-cv::imshow("Input image B", pngChannels[2]);
-cv::imshow("Input image A", pngChannels[3]);
-
-// Set to 255(white) the RGB channels where the Alpha channel(mask) is 0(transparency)
-pngChannels[0].setTo(cv::Scalar(255), pngChannels[3]==0);
-pngChannels[1].setTo(cv::Scalar(255), pngChannels[3]==0);
-pngChannels[2].setTo(cv::Scalar(255), pngChannels[3]==0);
-
-// Merge again the channels
-cv::Mat test_image_output;
-cv::merge(pngChannels, test_image_output);
-
-// Show the merged channels.
-cv::imshow("Output image", test_image_output);
-
-// For saving with changes, conversion is needed.
-cv::cvtColor(test_image_output, test_image_output, cv::COLOR_RGBA2RGB);
-cv::imwrite("NoAlpha.png", test_image_output);    
- */   
-}
-
 float recognizeDigits(cv::Mat im)
 {
     using namespace std;
@@ -102,27 +70,27 @@ void saturatePict(cv::Mat &im, unsigned int satlimit)
     }	
 }
 
-//string convertToString(char* a, int size) 
-//{ 
-//    string s(a); 
-  
-    // we cannot use this technique again 
-    // to store something in s 
-    // because we use constructors 
-    // which are only called 
-    // when the string is declared. 
-  
-    // Remove commented portion 
-    // to see for yourself 
-  
-    /* 
-    char demo[] = "gfg"; 
-    s(demo); // compilation error  
-    */
-  
-//    return s; 
-//} 
+// based on passed coordinates in const array fill places between them by white spaces
 
+void whiteningPicture (cv::Mat &im)
+{
+    //                                 0         0          1           1          9          9          5   
+	const int ranges [9] [2] = {{0,20}, {89,159}, {237,307}, {383, 455}, {526,600}, {671,742}, {823,860}, {964,1039}, {1103, 1115}};
+    for( int y = 0; y < img.rows; y++ ) 
+	{
+        for( int x = 0; x < img.cols; x++ ) 
+		{
+			for ( int i = 0; i < sizeof(ranges)/8; i++)
+			{
+			    if ((x > ranges[i][0]) && (x < ranges[i][1]))
+                {
+                    img.at<char>(y,x) = 255;
+                }
+			}
+		}
+	}
+
+}
 std::string convertToString(char* a) 
 { 
     unsigned char i; 
@@ -140,18 +108,9 @@ int main(int argc, char *argv[]) {
     std::string img_file{"/home/pi/Desktop/"};
     cout <<"argv[1]"<< argv[1] <<endl;
     cout <<"argc"<< argc <<endl;
-    int size = 18; 
-    cout <<"sizeof: " << size << endl;
     
     string fileName = convertToString(argv[1]);
-    cout << "filename: " << fileName<< endl; 
-    //img_file = img_file + fileName;
-    //cout << "connected" << img_file<< endl;
-    
-    
-    //std::string s = convertToString(argv[0], argc);
-    //img_file += s; 
-    //const std::string img_file{"../Desktop/2020_1_14_20_58_36.jpg"};
+ 
     const unsigned char maxValue = 255;  // 0 - black, 255 - white
 
     // Check if we can open the file
@@ -166,44 +125,27 @@ int main(int argc, char *argv[]) {
     cv::Mat output;
     cvtColor(input, output, cv::COLOR_BGR2GRAY);
     printPictInfo(output);
-    //cv::imwrite("GrayImage.jpg", output);
     // crop image 
                                     // x    y    width    height       
     cv::Mat cropped (output, cv::Rect(555, 110, 1670-555, 290-100) ); // using a rectangle
-    //
-    //cv::imshow("cropped", cropped);   //       alfa, beta
 
     //saturatePict (cropped, 130);
     printPictInfo(cropped);
     medianBlur ( cropped, cropped, 5 );
-    //cv::imshow("median blur", cropped);
     
     cv::Mat dst;
 
     // (InputArray src, OutputArray dst, double maxValue, int adaptiveMethod, int thresholdType, int blockSize, double C)
     cv::adaptiveThreshold(cropped,dst, maxValue,cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 101, 7.0);
     
-    //cv::imshow("bw_image.png", dst);
-    //cv::imwrite("bw_image.png", dst);
+ 
     // whitening of borders
 	cout << "rows" << dst.rows << "columns" << dst.cols << endl;
     // const int ranges [9] [2] = {{0,20}, {91,158}, {241,307}, {385, 455}, {530,597}, {679,742}, {822,866}, {966,1041}, {1105, 1115}};  
     //                                 0         0          1           1          9          9          5   
-	const int ranges [9] [2] = {{0,20}, {89,159}, {237,307}, {383, 455}, {526,600}, {671,742}, {823,866}, {964,1039}, {1103, 1115}};
+	const int ranges [9] [2] = {{0,20}, {89,159}, {237,307}, {383, 455}, {526,600}, {671,742}, {823,860}, {964,1039}, {1103, 1115}};
     
-    for( int y = 0; y < dst.rows; y++ ) 
-	{
-        for( int x = 0; x < dst.cols; x++ ) 
-		{
-			for ( int i = 0; i < sizeof(ranges)/8; i++)
-			{
-			    if ((x > ranges[i][0]) && (x < ranges[i][1]))
-                {
-                    dst.at<char>(y,x) = 255;
-                }
-			}
-		}
-	}
+    whiteningPicture (dst);
     
 	//cv::imshow("after whitening", dst);
 	
