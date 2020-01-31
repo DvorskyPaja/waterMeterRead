@@ -17,7 +17,8 @@ def generateName():
 	now = datetime.datetime.now()
 	imageName = str(now.year) + "_" + str(now.month) + "_" + str(now.day) + "_" + str(now.hour) + "_" + str(now.minute) + "_" + str(now.second) \
         + ".jpg"
-	print (imageName)
+	#print (imageName)
+	#print len(imageName)
 	return imageName
 
 def capturePicture(fileName):
@@ -25,16 +26,17 @@ def capturePicture(fileName):
 	time.sleep(5)
 
 	fullPath = '/home/pi/Desktop/' + fileName
+	print (fullPath)
 	camera.capture(fullPath)
 	targetPath = "/home/pi/Pictures/water.jpg"
 	#shutil.move(fullPath, targetPath)
-        shutil.copy(fullPath, targetPath)
+	shutil.copy(fullPath, targetPath)
 
 def sequence():
-	print ('...led on')
+	#print ('...led on')
 	GPIO.output(LedPin, GPIO.HIGH)  # led on
 	capturePicture(generateName())
-	print ('...led off')
+	#print ('...led off')
 	GPIO.output(LedPin, GPIO.LOW)  # led off
 	time.sleep(3.0)
 
