@@ -3,11 +3,11 @@
 # Datum:   31.1.2020
 # g++ gui_cpp_test.cpp -o gui_cpp_test -llept -ltesseract `pkg-config --cflags --libs opencv`
 CC=g++
-CFLAGS= #-std=c99 -pedantic -Wall -Wextra -g
+CFLAGS=`pkg-config --cflags --libs opencv` #-std=c99 -pedantic -Wall -Wextra -g
 NAME= gui_cpp_test
 
 $(NAME): $(NAME).cpp
-	$(CC) $(NAME).cpp -o $(NAME) -llept -ltesseract `pkg-config --cflags --libs opencv`
+	$(CC) $(CFLAGS) $(NAME).cpp -o $(NAME) -llept -ltesseract 
 clean:
 	rm -f $(NAME)
 
