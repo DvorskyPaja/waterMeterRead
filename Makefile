@@ -15,4 +15,3 @@ very_clean:
 	rm -f gui_cpp_test
 	rm -f *.png
 	rm -f *.log
-	rm -f ../*.txt
