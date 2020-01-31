@@ -8,6 +8,9 @@
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 
+// Data from Watermeter are read without decimal point
+// and in form of string
+// it needs conversion
 float convertToFLoat (std::string word)
 {
     word.erase(remove(word.begin(), word.end(), ' '), word.end());
@@ -15,12 +18,14 @@ float convertToFLoat (std::string word)
     return water;
 }
 
+// Supporting info
 void printPictInfo(cv::Mat image)
 {
     std::cout << "Image type: " << image.type() << std::endl;
     std::cout<<"number of channels"<<image.channels() <<std::endl;    
 }
 
+// not working properly
 float recognizeDigits(cv::Mat im)
 {
     using namespace std;
@@ -54,7 +59,7 @@ float recognizeDigits(cv::Mat im)
     cout << "recognized text: "<< outText << endl; // Destroy used object and release memory ocr->End();
     return convertToFLoat(outText);
 }
-// Get rid of too white places
+// Get rid of too white places from flash (white led diode)
 void saturatePict(cv::Mat &im, unsigned int satlimit)
 {
     //cv::Mat newImage = cropped;
@@ -71,8 +76,7 @@ void saturatePict(cv::Mat &im, unsigned int satlimit)
 }
 
 // based on passed coordinates in const array fill places between them by white spaces
-
-void whiteningPicture (cv::Mat &im)
+void whiteningPicture (cv::Mat &img)
 {
     //                                 0         0          1           1          9          9          5   
 	const int ranges [9] [2] = {{0,20}, {89,159}, {237,307}, {383, 455}, {526,600}, {671,742}, {823,860}, {964,1039}, {1103, 1115}};
@@ -91,12 +95,14 @@ void whiteningPicture (cv::Mat &im)
 	}
 
 }
+
+// function to convert array of chars to string
+// because from bash we receive array of char
 std::string convertToString(char* a) 
 { 
     unsigned char i; 
-    std::string s = ""; 
-    // do not want to create endless loop  
-    for (i = 0; i < 255; i++) { 
+    std::string s = "";  
+    for (i = 0; i < 100; i++) { 
         if (a[i] =='\0') return s;
         s = s + a[i]; 
     } 
