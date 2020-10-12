@@ -5,7 +5,7 @@ from openpyxl import load_workbook
 from PIL import Image
 
 def init():
-    global img =Image.open (os.path.join(os.getcwd() ,"recognize.png"))
+    global img = Image.open (os.path.join(os.getcwd() ,"recognize.png"))
     #print (os.path.join(os.getcwd() ,"recognize.png"))
 def recognize():
     custom_config = r"-c tessedit_char_whitelist=0123456789 --psm 6 -l digits"
@@ -20,38 +20,41 @@ def recognize():
     print(actualConsumption)
     return actualConsumption = float(replaced)/1000 
 
+def getDateTime():
+    result = re.search(r'\/([0-9|_]+)\.\w+$', str(sys.argv[1]))
+    fullDateTime = str(result.group(1))
+    fullDateTime = re.split('_', fullDateTime)
+    global date = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
+    global time = str(fullDateTime[3] + ':' + fullDateTime[4])
+
 # Writing into txt for web
 def writeIntoTxt (file, actualConsumption):
     file = open(file, 'a')  
     file.write('\n'+ date +"\t" + time + "\t" + str(actualConsumption))
     file.close()
 
+def writeIntoXlsx(actualConsumption)
+    # writing into xlsx
+    wb = load_workbook('/home/pi/Desktop/technicka.xlsx')
+    ws = wb['Sheet']
+
+
+    row_count = ws.max_row
+    column_count = ws.max_column
+    writeTo = 'C' + str(row_count+1)
+
+    # Write actual consumtion
+    ws[('C' + str(row_count+1))] = str(actualConsumption)
+    ws[('A' + str(row_count+1))] = date
+    ws[('B' + str(row_count+1))] = time
+
+    text = ws['A1'].value
+    print (text)
+    wb.save('/home/pi/Desktop/technicka.xlsx')
+
+
 init()
-writeIntoTxt('/home/pi/Scripts/web/text.txt', recognize())
-
-# writing into xlsx
-wb = load_workbook('/home/pi/Desktop/technicka.xlsx')
-ws = wb['Sheet']
-
-
-row_count = ws.max_row
-column_count = ws.max_column
-writeTo = 'C' + str(row_count+1)
-
-print ('Argument List:', str(sys.argv[1])
-result = re.search(r'\/([0-9|_]+)\.\w+$', str(sys.argv[1]))
-fullDateTime = str(result.group(1))
-fullDateTime = re.split('_', fullDateTime)
-
-
-date = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
-time = str(fullDateTime[3] + ':' + fullDateTime[4])
-
-# Write actual consumtion
-ws[('C' + str(row_count+1))] = str(actualConsumption)
-ws[('A' + str(row_count+1))] = date
-ws[('B' + str(row_count+1))] = time
-
-text = ws['A1'].value
-print (text)
-wb.save('/home/pi/Desktop/technicka.xlsx')
+getDateTime()
+consumption = recognize()
+writeIntoTxt('/home/pi/Scripts/web/text.txt', consumption)
+writeIntoXls(consumption)
