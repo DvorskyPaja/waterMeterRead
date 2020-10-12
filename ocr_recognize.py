@@ -5,8 +5,15 @@ from openpyxl import load_workbook
 from PIL import Image
 
 def init():
-    global img = Image.open (os.path.join(os.getcwd() ,"recognize.png"))
+    global img 
+    img = Image.open (os.path.join(os.getcwd() ,"recognize.png"))
     #print (os.path.join(os.getcwd() ,"recognize.png"))
+
+def parseConfidenceAndText(stringToParse):  
+    for line in stringToParse.splitlines():
+        print(0)
+
+
 def recognize():
     custom_config = r"-c tessedit_char_whitelist=0123456789 --psm 6 -l digits"
     #custom_config = r'--oem 3 --psm 6 outputbase digits'
@@ -14,18 +21,22 @@ def recognize():
     recognized = pytesseract.image_to_string(img, config = custom_config)
     print (recognized)
     text = pytesseract.image_to_data(img, config=custom_config)
-    #print (text)
+    print (text)
+    parseConfidenceAndText(text)
+
     replaced = recognized.replace(' ', '')
     #print (replaced)
-    print(actualConsumption)
-    return actualConsumption = float(replaced)/1000 
+    actualConsumption = float(replaced)/1000
+    print(actualConsumption) 
+    return actualConsumption
 
 def getDateTime():
     result = re.search(r'\/([0-9|_]+)\.\w+$', str(sys.argv[1]))
     fullDateTime = str(result.group(1))
     fullDateTime = re.split('_', fullDateTime)
-    global date = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
-    global time = str(fullDateTime[3] + ':' + fullDateTime[4])
+    global date, time
+    date = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
+    time = str(fullDateTime[3] + ':' + fullDateTime[4])
 
 # Writing into txt for web
 def writeIntoTxt (file, actualConsumption):
@@ -33,7 +44,7 @@ def writeIntoTxt (file, actualConsumption):
     file.write('\n'+ date +"\t" + time + "\t" + str(actualConsumption))
     file.close()
 
-def writeIntoXlsx(actualConsumption)
+def writeIntoXlsx(actualConsumption):
     # writing into xlsx
     wb = load_workbook('/home/pi/Desktop/technicka.xlsx')
     ws = wb['Sheet']
@@ -57,4 +68,4 @@ init()
 getDateTime()
 consumption = recognize()
 writeIntoTxt('/home/pi/Scripts/web/text.txt', consumption)
-writeIntoXls(consumption)
+writeIntoXlsx(consumption)

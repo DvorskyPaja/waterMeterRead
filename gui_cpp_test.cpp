@@ -163,6 +163,7 @@ int main(int argc, char *argv[]) {
     //}
     //removeAlphaChannel(dst);
     cv::imwrite("/home/pi/Scripts/recognize.png", dst);
+    cv::imwrite(fileName, dst);
     //float water = recognizeDigits (dst);
     //cout << "Actual state: " << water <<endl;
     //cv::imshow("ManuallyUpdated",dst);

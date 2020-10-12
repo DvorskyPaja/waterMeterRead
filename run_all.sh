@@ -4,7 +4,9 @@ echo "generateImageName.py"
 IMAGE=$(python /home/pi/Scripts/generateImageName.py)
 echo "opencv"
 echo $IMAGE
+echo "gui_cpp_test"
 /home/pi/Scripts/gui_cpp_test $IMAGE
-echo "recognize"
+echo "recognize using ocr_recognize.py"
 python /home/pi/Scripts/ocr_recognize.py $IMAGE
+echo "Sending to WEB"
 /home/pi/Scripts/send.sh

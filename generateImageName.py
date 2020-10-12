@@ -28,9 +28,6 @@ def capturePicture(fileName):
 	fullPath = '/home/pi/Desktop/' + fileName
 	print (fullPath)
 	camera.capture(fullPath)
-	targetPath = "/home/pi/Pictures/water.jpg"
-	#shutil.move(fullPath, targetPath)
-	shutil.copy(fullPath, targetPath)
 
 def sequence():
 	#print ('...led on')

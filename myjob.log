@@ -1,0 +1,31 @@
+generateImageName.py
+/home/pi/Scripts/generateImageName.py:13: RuntimeWarning: This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.
+  GPIO.setup(LedPin, GPIO.OUT)   # Set LedPin's mode is output
+opencv
+/home/pi/Desktop/2020_10_12_21_13_7.jpg
+gui_cpp_test
+argv[1]/home/pi/Desktop/2020_10_12_21_13_7.jpg
+argc2
+Image type: 16
+number of channels3
+Image type: 0
+number of channels1
+Image type: 0
+number of channels1
+rows190columns1115
+recognize using ocr_recognize.py
+Traceback (most recent call last):
+  File "/home/pi/Scripts/ocr_recognize.py", line 59, in <module>
+    init()
+  File "/home/pi/Scripts/ocr_recognize.py", line 9, in init
+    img = Image.open (os.path.join(os.getcwd() ,"recognize.png"))
+  File "/usr/lib/python2.7/dist-packages/PIL/Image.py", line 2634, in open
+    fp = builtins.open(filename, "rb")
+IOError: [Errno 2] No such file or directory: '/home/pi/recognize.png'
+Sending to WEB
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 91944    0     0  100 91944      0   215k --:--:-- --:--:-- --:--:--  215k
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  8262    0     0  100  8262      0  23538 --:--:-- --:--:-- --:--:-- 23605
