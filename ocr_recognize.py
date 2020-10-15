@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import time
 import pytesseract
 import sys, re, os
 from openpyxl import load_workbook
@@ -50,20 +51,10 @@ def parseTeseractResults(stringToParse, myDictionary):
 
 def recognize():
     custom_config = r"-c tessedit_char_whitelist=0123456789 --psm 6 -l digits"
-    #custom_config = r'--oem 3 --psm 6 outputbase digits'
-
-    #recognized = pytesseract.image_to_string(img, config = custom_config)
-    #print (recognized)
     text = pytesseract.image_to_data(img, config=custom_config)
+    print (text)
     parsedData = {}
     parseTeseractResults(text, parsedData)
-    #print (text)
-    #parseConfidenceAndText(text)
-    
-    #replaced = recognized.replace(' ', '')
-    #print (replaced)
-    #actualConsumption = float(replaced)/1000
-    #print(actualConsumption) 
     return parsedData
 
 def getValidityAndConsumption(myDict, previousValidValues):
@@ -76,29 +67,31 @@ def getValidityAndConsumption(myDict, previousValidValues):
         if item == "NA" or item == "text":
             pass
         else:
-            consumption = consumption + item 
             recognized_digits += 1 
             if (float(myDict["conf"][index]) < 70.0):
                 return [2, -1]
+            consumption = consumption + item 
+
         index += 1
 
     if recognized_digits != expected_digits :
         return [1,-1]
+    consumption = float (consumption)/1000
     return [0, consumption]
 
 def getDateTime():
     result = re.search(r'\/([0-9|_]+)\.\w+$', str(sys.argv[1]))
     fullDateTime = str(result.group(1))
     fullDateTime = re.split('_', fullDateTime)
-    global date, time
-    date = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
-    time = str(fullDateTime[3] + ':' + fullDateTime[4])
+    global date, actTime
+    date    = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
+    actTime = str(fullDateTime[3] + ':' + fullDateTime[4])
 
 # Writing into txt for web
 def writeIntoTxt (file, actualConsumption):
     file = open(file, 'a')  
-    file.write('\n'+ date +"\t" + time + "\t" + str(actualConsumption))
-    file.close()
+    file.write('\n'+ date +"\t" + actTime + "\t" + str(actualConsumption))
+    file.close()   
 
 def writeIntoXlsx(actualConsumption):
     # writing into xlsx
@@ -113,7 +106,7 @@ def writeIntoXlsx(actualConsumption):
     # Write actual consumtion
     ws[('C' + str(row_count+1))] = str(actualConsumption)
     ws[('A' + str(row_count+1))] = date
-    ws[('B' + str(row_count+1))] = time
+    ws[('B' + str(row_count+1))] = actTime
 
     text = ws['A1'].value
     print (text)
@@ -122,8 +115,18 @@ def writeIntoXlsx(actualConsumption):
 
 init()
 getDateTime()
-consumptionDictionary = recognize()
-retVal = getValidityAndConsumption(consumptionDictionary, [0,0])
-consumption = retVal[1]
-writeIntoTxt('/home/pi/Scripts/web/text.txt', consumption)
-writeIntoXlsx(consumption)
+# try several times to get better picture (the wheel on the flowmeter could be moving)
+for i in range(6):
+    consumptionDictionary = recognize()
+    retVal = getValidityAndConsumption(consumptionDictionary, [0,0])
+    consumption = retVal[1]
+    if consumption != -1:
+        break
+
+    time.sleep(5.0)
+    print ("another try")
+
+print ("Actual Consumption:", consumption )
+if consumption != -1:
+    writeIntoTxt('/home/pi/Scripts/web/text.txt', consumption)
+    writeIntoXlsx(consumption)
