@@ -5,13 +5,14 @@ import sys, re, os
 from openpyxl import load_workbook
 from PIL import Image
 
+basePath = "/home/pi/Scripts/"
+
 def init():
     global img 
-    img = Image.open ("/home/pi/Scripts/recognize.png")
-    print (os.path.join(os.getcwd() ,"recognize.png"))
+    filePath = os.path.join(basePath, "recognize.png")
+    img = Image.open (filePath)
 
 def parseTeseractResults(stringToParse, myDictionary):  
-    i = 0
     for line in stringToParse.splitlines():
         items = line.split()
         #dict_obj[key] = [dict_obj[key]]
@@ -49,6 +50,7 @@ def parseTeseractResults(stringToParse, myDictionary):
             except:
                 myDictionary["text"].append("NA") 
 
+# use teseract to recognize digits 
 def recognize():
     custom_config = r"-c tessedit_char_whitelist=0123456789 --psm 6 -l digits"
     text = pytesseract.image_to_data(img, config=custom_config)
@@ -57,6 +59,7 @@ def recognize():
     parseTeseractResults(text, parsedData)
     return parsedData
 
+# decide if recognized data make sense
 def getValidityAndConsumption(myDict, previousValidValues):
     consumption = ""
     index = 0
@@ -87,7 +90,7 @@ def getDateTime():
     date    = str(fullDateTime[2] + '.' + fullDateTime[1] + '.' + fullDateTime[0])
     actTime = str(fullDateTime[3] + ':' + fullDateTime[4])
 
-# Writing into txt for web
+# To write consumtion and 
 def writeIntoTxt (file, actualConsumption):
     file = open(file, 'a')  
     file.write('\n'+ date +"\t" + actTime + "\t" + str(actualConsumption))
@@ -100,8 +103,8 @@ def writeIntoXlsx(actualConsumption):
 
 
     row_count = ws.max_row
-    column_count = ws.max_column
-    writeTo = 'C' + str(row_count+1)
+    #column_count = ws.max_column
+    #writeTo = 'C' + str(row_count+1)
 
     # Write actual consumtion
     ws[('C' + str(row_count+1))] = str(actualConsumption)
@@ -128,5 +131,5 @@ for i in range(6):
 
 print ("Actual Consumption:", consumption )
 if consumption != -1:
-    writeIntoTxt('/home/pi/Scripts/web/text.txt', consumption)
+    writeIntoTxt(os.path.join(basePath, "web/text.txt"), consumption)
     writeIntoXlsx(consumption)
