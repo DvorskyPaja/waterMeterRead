@@ -78,8 +78,8 @@ void saturatePict(cv::Mat &im, unsigned int satlimit)
 // based on passed coordinates in const array fill places between them by white spaces
 void whiteningPicture (cv::Mat &img)
 {
-    //                                 0         0          1           1          9          9          5   
-	const int ranges [9] [2] = {{0,20}, {89,159}, {237,307}, {383, 455}, {526,600}, {671,742}, {823,860}, {964,1039}, {1103, 1115}};
+    //                                 0         0          1           1          9          9          5           0 
+	const int ranges [9] [2] = {{0,20}, {89,159}, {237,307}, {383, 455}, {526,600}, {671,740}, {823,860}, {964,1037}, {1103, 1115}};
     for( int y = 0; y < img.rows; y++ ) 
 	{
         for( int x = 0; x < img.cols; x++ ) 

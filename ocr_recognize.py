@@ -4,6 +4,7 @@ import pytesseract
 import sys, re, os
 from openpyxl import load_workbook
 from PIL import Image
+import htmlPage
 
 basePath = "/home/pi/Scripts/"
 
@@ -53,6 +54,7 @@ def parseTeseractResults(stringToParse, myDictionary):
 # use teseract to recognize digits 
 def recognize():
     custom_config = r"-c tessedit_char_whitelist=0123456789 --psm 6 -l digits"
+    global text
     text = pytesseract.image_to_data(img, config=custom_config)
     print (text)
     parsedData = {}
@@ -133,3 +135,9 @@ print ("Actual Consumption:", consumption )
 if consumption != -1:
     writeIntoTxt(os.path.join(basePath, "web/text.txt"), consumption)
     writeIntoXlsx(consumption)
+
+# log unsuccesfull reading
+if consumption == -1:
+    web = htmlPage.logHtml(os.path.join(basePath, "unrecognized.html"))
+    web.writeAll((date+" " + actTime), text, os.path.join(basePath, "recognize.png"))
+    web.closeHtml()
