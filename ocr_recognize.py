@@ -139,5 +139,6 @@ if consumption != -1:
 # log unsuccesfull reading
 if consumption == -1:
     web = htmlPage.logHtml(os.path.join(basePath, "unrecognized.html"))
-    web.writeAll((date+" " + actTime), text, os.path.join(basePath, "recognize.png"))
+    web.writeAll((date+" " + actTime), text, sys.argv[1])
+    print (sys.argv[1])
     web.closeHtml()
