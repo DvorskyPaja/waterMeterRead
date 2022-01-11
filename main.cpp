@@ -2,6 +2,8 @@
 // You can compile the program with:
 // opencv only     g++ gui_cpp_test.cpp -o gui_cpp_test `pkg-config --cflags --libs opencv`      
 // with tesseract  g++ gui_cpp_test.cpp -o gui_cpp_test -llept -ltesseract `pkg-config --cflags --libs opencv`
+
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
@@ -120,20 +122,22 @@ int main(int argc, char *argv[]) {
     const unsigned char maxValue = 255;  // 0 - black, 255 - white
 
     // Check if we can open the file
-    cv::Mat input = cv::imread(fileName, 1);
-    printPictInfo(input);
-    if(!input.data) {
+    cv::Mat inputImage = cv::imread(fileName, 1);
+    printPictInfo(inputImage);
+    if(!inputImage.data) {
         std::cout << "Can't open file " << img_file << '\n';
         return -1;
     }
 
     // Convert to gray
-    cv::Mat output;
-    cvtColor(input, output, cv::COLOR_BGR2GRAY);
-    printPictInfo(output);
+    cv::Mat grayImg;
+    cvtColor(inputImage, grayImg, cv::COLOR_BGR2GRAY);
+    printPictInfo(grayImg);
+    printf("imshow");
+    cv::imshow("Grayed", grayImg);
     // crop image 
                                     // x    y    width    height       
-    cv::Mat cropped (output, cv::Rect(555, 110, 1670-555, 290-100) ); // using a rectangle
+    cv::Mat cropped (grayImg, cv::Rect(555, 110, 1670-555, 290-100) ); // using a rectangle
 
     //saturatePict (cropped, 130);
     printPictInfo(cropped);
@@ -167,7 +171,7 @@ int main(int argc, char *argv[]) {
     //cout << "Actual state: " << water <<endl;
     //cv::imshow("ManuallyUpdated",dst);
     // Wait until the presses any key
-    //cv::waitKey(0);
+    cv::waitKey(0);
     cv::destroyAllWindows();
 
     return 0;

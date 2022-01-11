@@ -1,10 +1,12 @@
 #!/bin/bash
 export LD_LIBRARY_PATH=/opt/opencv-4.1.0/lib
+outDir = "/home/pi/Scripts"
+
 echo "generateImageName.py"
-IMAGE=$(python /home/pi/Scripts/generateImageName.py)
+IMAGE=$(python /home/pi/Scripts/capturePicture.py)
 echo "opencv"
 echo $IMAGE
-/home/pi/Scripts/gui_cpp_test $IMAGE
+/home/pi/Scripts/main $IMAGE
 echo "recognize"
-python /home/pi/Scripts/ocr_recognize.py $IMAGE
-/home/pi/Scripts/send.sh
+python $outDir/ocr_teseract.py $IMAGE
+$outDir/send.sh
