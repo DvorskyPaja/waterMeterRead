@@ -22,10 +22,13 @@ $(NAME): $(NAME).cpp
 	@echo "Building for $(OS)"	
 #	$(CC) $(CFLAGS) $(NAME).cpp -o $(NAME) -llept -ltesseract	
 	$(CC) $(CFLAGS) $(NAME).cpp -o $(NAME) $(CFLAGS2) 	
+
+
+
 clean:
 	rm -f $(NAME)
 
 very_clean:
-	rm -f gui_cpp_test
+	rm -f $(NAME)
 	rm -f *.png
 	rm -f *.log

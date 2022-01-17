@@ -7,18 +7,12 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
+// for OCR
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
+// To obtain image
+#include "imageIn.h"
 
-// Data from Watermeter are read without decimal point
-// and in form of string
-// it needs conversion
-float convertToFLoat (std::string word)
-{
-    word.erase(remove(word.begin(), word.end(), ' '), word.end());
-    float water = stof(word)/1000;
-    return water;
-}
 
 // Supporting info
 void printPictInfo(cv::Mat image)
@@ -27,40 +21,7 @@ void printPictInfo(cv::Mat image)
     std::cout<<"number of channels"<<image.channels() <<std::endl;    
 }
 
-// not working properly
-float recognizeDigits(cv::Mat im)
-{
-    using namespace std;
-   std::string outText;
-    // Create Tesseract object
-    tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
-     
-    // Initialize tesseract to use English (eng) and the LSTM OCR engine. 
-    ocr->Init(NULL, "digits", tesseract::OEM_LSTM_ONLY);
- 
-    // Set Page segmentation mode to PSM_AUTO (3)
-    ocr->SetPageSegMode(tesseract::PSM_AUTO);
-        //ocr->SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
- 
-    Pix *image = pixRead("recognize.png"); 
-    if (!image) {
-       fprintf(stderr, "Leptonica can't process input file!\n");
-       return 2;
-     }
-     
-     
-     ocr->SetImage(image);
-    
-    //            image    columns  rows     bytes per pixel,bytes per line    
-    //ocr->SetImage(im.data, im.cols, im.rows, 1, im.step);
-    
-    cout<<"step" << im.step<<endl;
-     // Run Tesseract OCR on image
-    outText = string(ocr->GetUTF8Text());
-    ocr->End();
-    cout << "recognized text: "<< outText << endl; // Destroy used object and release memory ocr->End();
-    return convertToFLoat(outText);
-}
+
 // Get rid of too white places from flash (white led diode)
 void saturatePict(cv::Mat &im, unsigned int satlimit)
 {
@@ -123,6 +84,9 @@ int main(int argc, char *argv[]) {
 
     // Check if we can open the file
     cv::Mat inputImage = cv::imread(fileName, 1);
+    
+    
+    
     printPictInfo(inputImage);
     if(!inputImage.data) {
         std::cout << "Can't open file " << img_file << '\n';
@@ -135,6 +99,8 @@ int main(int argc, char *argv[]) {
     printPictInfo(grayImg);
     printf("imshow");
     cv::imshow("Grayed", grayImg);
+
+
     // crop image 
                                     // x    y    width    height       
     cv::Mat cropped (grayImg, cv::Rect(555, 110, 1670-555, 290-100) ); // using a rectangle
