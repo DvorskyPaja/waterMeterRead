@@ -11,17 +11,23 @@ ifeq ($(OS),Ubuntu)
 #CFLAGS=$(shell pkg-config --cflags --libs opencv4) #-std=c99 -pedantic -Wall -Wextra -g
 else
 	CFLAGS=`pkg-config --cflags --libs opencv` #-std=c99 -pedantic -Wall -Wextra -g
-	CFLAGS2=-llept -ltesseract	
+	CFLAGS2=-llept -ltesseract -lwiringPi	
 endif
 
 NAME= main
 
+OBJS = Directory.o imageIn.o 
 #g++ -std=c++11 main.cpp -o test pkg-config opencv4 --cflags --clibs
+all: $(NAME)
 
-$(NAME): $(NAME).cpp
+$(OBJS):%.o: %.cpp
+	@echo "Building obj files"
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(NAME): $(NAME).cpp $(OBJS)
 	@echo "Building for $(OS)"	
 #	$(CC) $(CFLAGS) $(NAME).cpp -o $(NAME) -llept -ltesseract	
-	$(CC) $(CFLAGS) $(NAME).cpp -o $(NAME) $(CFLAGS2) 	
+	$(CC) $(CFLAGS) $(NAME).cpp $(OBJS) -o $(NAME) $(CFLAGS2) 
 
 
 
@@ -32,3 +38,4 @@ very_clean:
 	rm -f $(NAME)
 	rm -f *.png
 	rm -f *.log
+	rm -f *.o

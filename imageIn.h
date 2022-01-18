@@ -9,6 +9,8 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "Directory.h"
+#include <wiringPi.h>
+
 
 class ImageIn {
 public:
@@ -25,6 +27,7 @@ protected:
     cv::Mat _img;
     time_t _time;
     std::string _outDir;
+    int _LED; // position of flash led 
 };
 
 class FolderImage: public ImageIn {
@@ -42,7 +45,7 @@ private:
 
 class CameraImage: public ImageIn {
 public:
-    CameraImage(int device);
+    CameraImage(int device, int flashLedPosition);
 
     virtual bool obtainImage();
 

@@ -3,6 +3,9 @@
 #include <list>
 #include <iostream>
 
+//#include <log4cpp/Category.hh>
+//#include <log4cpp/Priority.hh>
+
 
 //#include "Directory.h"
 #include "imageIn.h"
@@ -12,13 +15,18 @@ ImageIn::~ImageIn()
 
 }
 
-cv::Mat& ImageInput::getImage() {
+cv::Mat& ImageIn::getImage() {
     return _img;
 }
 
-time_t ImageInput::getTime() {
+time_t ImageIn::getTime() {
     return _time;
 }
+
+void ImageIn::setOutputDir(const std::string & outDir) {
+    _outDir = outDir;
+}
+
 
 void ImageIn::saveImage() {
     struct tm date;
@@ -27,7 +35,8 @@ void ImageIn::saveImage() {
     strftime(filename, PATH_MAX, "/%Y%m%d-%H%M%S.png", &date);
     std::string path = _outDir + filename;
     if (cv::imwrite(path, _img)) {
-        log4cpp::Category::getRoot() << log4cpp::Priority::INFO << "Image saved to " + path;
+        //log4cpp::Category::getRoot() << log4cpp::Priority::INFO << "Image saved to " + path;
+        std::cout << "image saved";
     }
 }
 
@@ -59,7 +68,7 @@ bool FolderImage::obtainImage() {
     date.tm_sec = atoi(_itFilename->substr(13, 2).c_str());
     _time = mktime(&date);
 
-    log4cpp::Category::getRoot() << log4cpp::Priority::INFO << "Processing " << *_itFilename << " of " << ctime(&_time);
+    //log4cpp::Category::getRoot() << log4cpp::Priority::INFO << "Processing " << *_itFilename << " of " << ctime(&_time);
 
     // save copy of image if requested
     if (!_outDir.empty()) {
@@ -71,16 +80,25 @@ bool FolderImage::obtainImage() {
 }
 
 
-CameraImage::CameraImage(int device) {
+CameraImage::CameraImage(int device, int flashLedPosition) {
     _capture.open(device);
+    _LED = flashLedPosition; 
 }
 
 bool CameraImage::obtainImage() {
     time(&_time);
+    // flash on
+    wiringPiSetup();			// Setup the library
+    pinMode(_LED, OUTPUT);		// Configure GPIO0 as an output
+    delay(500);
+    digitalWrite(_LED, true);
+    
     // read image from camera
     bool success = _capture.read(_img);
+    std::cout << "image captured" << std::endl;
+    //log4cpp::Category::getRoot() << log4cpp::Priority::INFO << "Image captured: " << success;
+    digitalWrite(_LED, false); // flash off
 
-    log4cpp::Category::getRoot() << log4cpp::Priority::INFO << "Image captured: " << success;
 
     // save copy of image if requested
     if (success && !_outDir.empty()) {

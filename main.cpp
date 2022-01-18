@@ -18,7 +18,7 @@
 void printPictInfo(cv::Mat image)
 {
     std::cout << "Image type: " << image.type() << std::endl;
-    std::cout<<"number of channels"<<image.channels() <<std::endl;    
+    std::cout<<"number of channels: "<<image.channels() <<std::endl;    
 }
 
 
@@ -73,19 +73,19 @@ std::string convertToString(char* a)
 } 
 
 int main(int argc, char *argv[]) {
+
     using namespace std;    
     std::string img_file{"/home/pi/Desktop/"};
-    cout <<"argv[1]"<< argv[1] <<endl;
-    cout <<"argc"<< argc <<endl;
-    
-    string fileName = convertToString(argv[1]);
- 
-    const unsigned char maxValue = 255;  // 0 - black, 255 - white
 
-    // Check if we can open the file
-    cv::Mat inputImage = cv::imread(fileName, 1);
+    const unsigned char maxValue = 255;  // 0 - black, 255 - white
+ 
+    CameraImage CameraInput = CameraImage(0,2);  // TBD in future put LED position to some config
+    CameraInput.obtainImage();
+    cv::Mat inputImage = CameraInput.getImage();
     
-    
+    //cv::Mat inputImage = cv::imread(fileName, 1);
+    cv::imshow("image", inputImage);
+    cv::waitKey(0);
     
     printPictInfo(inputImage);
     if(!inputImage.data) {

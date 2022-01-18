@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <cstring>
 
-#include "directory.h"
+#include "Directory.h"
 
 Directory::Directory(const char* path, const char* extension) :
         _path(path), _extension(extension) {
