@@ -78,28 +78,32 @@ int main(int argc, char *argv[]) {
     std::string img_file{"/home/pi/Desktop/"};
 
     const unsigned char maxValue = 255;  // 0 - black, 255 - white
- 
-    CameraImage CameraInput = CameraImage(0,2);  // TBD in future put LED position to some config
-    CameraInput.obtainImage();
-    cv::Mat inputImage = CameraInput.getImage();
+    ImageIn* ptrImageIn = 0;
+// Get Image input
+    #if WATERMETER_DEBUG==1
+        ptrImageIn = new CameraImage (0,2);
+    #else
+        ptrImageIn = new FolderImage (Directory("/home/pavel/Programming/waterMeterRead/images",".jpg"));
+        //cv::Mat inp
+    #endif
+    ptrImageIn->obtainImage();    
     
-    //cv::Mat inputImage = cv::imread(fileName, 1);
-    cv::imshow("image", inputImage);
-    cv::waitKey(0);
-    
-    printPictInfo(inputImage);
+    cv::Mat inputImage = ptrImageIn->getImage();
+
     if(!inputImage.data) {
         std::cout << "Can't open file " << img_file << '\n';
         return -1;
     }
 
+    cv::imshow(" original image", ptrImageIn->getImage());
+    cv::waitKey(0);
+
+// Pre - Process image (Move it into ImgPreProcesor class)
     // Convert to gray
     cv::Mat grayImg;
     cvtColor(inputImage, grayImg, cv::COLOR_BGR2GRAY);
-    printPictInfo(grayImg);
-    printf("imshow");
     cv::imshow("Grayed", grayImg);
-
+    cv::waitKey(0);
 
     // crop image 
                                     // x    y    width    height       

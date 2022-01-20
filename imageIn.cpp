@@ -79,7 +79,7 @@ bool FolderImage::obtainImage() {
     return true;
 }
 
-
+#if WATERMETER_DEBUG==1
 CameraImage::CameraImage(int device, int flashLedPosition) {
     _capture.open(device);
     _LED = flashLedPosition; 
@@ -107,7 +107,7 @@ bool CameraImage::obtainImage() {
 
     return success;
 }
-
+#endif
 
 
 

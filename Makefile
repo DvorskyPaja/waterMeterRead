@@ -3,6 +3,7 @@
 # Datum:   31.1.2020
 # g++ gui_cpp_test.cpp -o gui_cpp_test -llept -ltesseract `pkg-config --cflags --libs opencv`
 CC=g++
+WATERMETER_DEBUG=$$WATERMETER_DEBUG 
 OS=$(shell lsb_release -si)
 ifeq ($(OS),Ubuntu)
     # - g means compile and assembly do not link

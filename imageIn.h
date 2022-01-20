@@ -9,8 +9,10 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "Directory.h"
-#include <wiringPi.h>
 
+#if WATERMETER_DEBUG==1
+    #include <wiringPi.h>
+#endif
 
 class ImageIn {
 public:
@@ -42,7 +44,7 @@ private:
     std::list<std::string> _filenameList;
 };
 
-
+#if WATERMETER_DEBUG==1
 class CameraImage: public ImageIn {
 public:
     CameraImage(int device, int flashLedPosition);
@@ -52,6 +54,6 @@ public:
 private:
     cv::VideoCapture _capture;
 };
-
+#endif
 
 #endif /* IMAGEIN_H_ */
