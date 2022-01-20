@@ -80,18 +80,17 @@ int main(int argc, char *argv[]) {
     const unsigned char maxValue = 255;  // 0 - black, 255 - white
     ImageIn* ptrImageIn = 0;
 // Get Image input
-    #if WATERMETER_DEBUG==1
+    #if CAMERA_PRESENT==1
         ptrImageIn = new CameraImage (0,2);
     #else
         ptrImageIn = new FolderImage (Directory("/home/pavel/Programming/waterMeterRead/images",".jpg"));
-        //cv::Mat inp
     #endif
     ptrImageIn->obtainImage();    
     
     cv::Mat inputImage = ptrImageIn->getImage();
 
     if(!inputImage.data) {
-        std::cout << "Can't open file " << img_file << '\n';
+        std::cout << "Can't open image file \n";
         return -1;
     }
 

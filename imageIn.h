@@ -10,7 +10,7 @@
 
 #include "Directory.h"
 
-#if WATERMETER_DEBUG==1
+#if CAMERA_PRESENT==1
     #include <wiringPi.h>
 #endif
 
@@ -44,7 +44,7 @@ private:
     std::list<std::string> _filenameList;
 };
 
-#if WATERMETER_DEBUG==1
+#if CAMERA_PRESENT==1
 class CameraImage: public ImageIn {
 public:
     CameraImage(int device, int flashLedPosition);
